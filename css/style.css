@@ -1,0 +1,96 @@
+/* CHPTR — Coming Soon. Everything inside #stage lives in the background's 1536×1024 pixel space. */
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#050302;color:#ead4a3;overflow:hidden}
+body{font-family:'Cinzel',Georgia,'Times New Roman',serif}
+#scene{position:relative;width:100%;height:100svh;overflow:hidden;isolation:isolate;background:#050302 url('../images/restaurant-background.webp') center center/cover no-repeat}
+
+#stage{position:absolute;left:50%;top:50%;width:1536px;height:1024px;transform:translate(-50%,-50%) scale(var(--s,1))}
+#camera{position:absolute;inset:0}
+#camera>*{position:absolute}
+.bg{left:0;top:0;width:1536px;height:1024px;display:block}
+#dim{inset:0;background:#050302;opacity:.62;pointer-events:none}
+
+/* Light */
+#glows{inset:0;pointer-events:none;mix-blend-mode:screen}
+#glows i{position:absolute;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;background:radial-gradient(circle,#ffb35c50 0%,#ff8a2a1c 35%,transparent 70%);will-change:opacity,transform}
+#glows i.sconce{width:120px;height:260px;margin:-130px 0 0 -60px;background:radial-gradient(ellipse,#ffc77a3a 0%,transparent 70%)}
+#arch-glow{left:520px;top:220px;width:496px;height:560px;opacity:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(ellipse 50% 45% at 50% 48%,#ffb4582a,transparent 72%)}
+#impact{left:560px;top:290px;width:416px;height:300px;opacity:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(ellipse 50% 50%,#ffd79066,#ffb04a22 45%,transparent 72%)}
+#entrance-glow{top:700px;width:560px;height:320px;transform:translate(-50%,-50%);opacity:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(ellipse 50% 50% at 50% 50%,#ffbe6438,#ff9a3412 45%,transparent 72%)}
+
+/* Horse: canvas while moving, then the static final image on the identical box */
+#arch-light{inset:0;width:1536px;height:1024px;pointer-events:none;opacity:0;mix-blend-mode:screen}
+#arch-light path{stroke-dasharray:1;stroke-dashoffset:1}
+.arch-bloom{stroke:#ff9c32;stroke-width:12;opacity:.65;filter:url(#gold-bloom)}
+.arch-edge{stroke:#ffb94f;stroke-width:3;opacity:.7}
+.arch-core{stroke:#fff0bd;stroke-width:1.7}
+
+.no-motion #arch-light{opacity:1}.no-motion #arch-light path{stroke-dashoffset:0}
+#horse-canvas{left:0;top:0;width:1536px;height:1024px;pointer-events:none}
+.horse-final{visibility:hidden;display:block;left:576.5px;top:340px;width:383px;height:184px}   /* JS re-places it from CONFIG */
+
+/* Logo ornaments, placed around the final horse */
+#emblems{inset:0;pointer-events:none}
+#emblems>*{position:absolute;visibility:hidden}
+#emblems img{object-fit:contain;filter:drop-shadow(0 3px 4px #0009)}
+/* as in the original logo: over the withers, the end of the staff hidden in the mane */
+.banner{left:729px;top:299px;width:115px;height:112px;transform-origin:25% 100%}
+.dots{left:603px;top:303px;width:100px;height:69px}
+.star{left:925px;top:321px;width:42px;height:43px}
+
+/* Name reveal */
+
+
+#name{left:578px;top:530px;width:380px;height:117.46px;margin:0;padding:0;line-height:0}
+#name .wordmark{display:block;width:100%;height:100%;overflow:hidden;filter:drop-shadow(0 3px 2px #000a)}
+#coming-soon .ch,#coming-soon .gap{display:inline-block}#coming-soon .gap{width:.5em}
+#coming-soon{left:0;right:0;top:656px;margin:0;text-align:center;font-weight:500;font-size:16px;letter-spacing:.55em;padding-left:.55em;color:#f1d39a;white-space:nowrap;text-shadow:0 0 12px #ffb24f40}
+#ornament{left:648px;top:686px;width:240px;display:flex;align-items:center;gap:12px}
+.rule{height:1px;flex:1}
+.rule.left{background:linear-gradient(90deg,transparent,#dca55d);transform-origin:100% 50%}
+.rule.right{background:linear-gradient(270deg,transparent,#dca55d);transform-origin:0 50%}
+.diamond{width:7px;height:7px;border:1px solid #e3b067;rotate:45deg}
+
+/* Almost imperceptible air movement */
+#motes{inset:0;pointer-events:none}
+#motes i{position:absolute;width:3px;height:3px;border-radius:50%;background:#ffd79a;opacity:0;animation:drift 18s linear infinite}
+#motes i:nth-child(1){left:300px;top:700px}#motes i:nth-child(2){left:520px;top:820px;animation-delay:-3s}
+#motes i:nth-child(3){left:700px;top:760px;animation-delay:-7s}#motes i:nth-child(4){left:880px;top:900px;animation-delay:-11s}
+#motes i:nth-child(5){left:1040px;top:720px;animation-delay:-5s}#motes i:nth-child(6){left:1220px;top:860px;animation-delay:-14s}
+#motes i:nth-child(7){left:620px;top:600px;animation-delay:-9s}#motes i:nth-child(8){left:960px;top:640px;animation-delay:-2s}
+#motes i:nth-child(9){left:420px;top:540px;animation-delay:-16s}#motes i:nth-child(10){left:1120px;top:560px;animation-delay:-12s}
+@keyframes drift{0%{transform:translate(0,0);opacity:0}15%{opacity:.25}85%{opacity:.18}100%{transform:translate(40px,-260px);opacity:0}}
+
+.vignette{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 46%,transparent 48%,#050302a8 100%),linear-gradient(180deg,#05030270,transparent 18%,transparent 82%,#05030290)}
+
+/* No GSAP or reduced motion: show the final composition. */
+.no-motion #dim{opacity:0}.no-motion .horse-final,.no-motion #emblems>*{visibility:visible}
+@media (prefers-reduced-motion:reduce){#motes{display:none}}
+
+/* Continue the room to every viewport edge when portrait framing preserves the logo. */
+#arch-light .arch-runner{stroke:#fffbe6;stroke-width:5;stroke-dasharray:.055 .945;stroke-dashoffset:0;filter:drop-shadow(0 0 6px #ffd17a)}
+.no-motion #arch-light .arch-runner{display:none}
+
+/* Generated velvet texture shared by two clipped, moving panels. */
+#preloader{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;display:block;background:#250707}
+.curtain{position:absolute;top:0;bottom:0;width:calc(50% + 2px);will-change:transform;background:#250707;overflow:hidden}
+.curtain-left{left:0;transform-origin:left top;clip-path:url(#curtain-cut-left)}
+.curtain-right{right:0;transform-origin:right top;clip-path:url(#curtain-cut-right)}
+.curtain img{position:absolute;top:0;display:block;width:100vw;height:100%;max-width:none;object-fit:cover;object-position:center;pointer-events:none}
+.curtain-left img{left:0}
+.curtain-right img{right:0}
+ .intro-paper{position:absolute;left:50%;top:50%;width:min(340px,78vw);height:min(440px,72svh);padding:clamp(28px,7vh,56px) 25px 30px;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;background:radial-gradient(ellipse at 35% 25%,#f3dfb8,transparent 75%),linear-gradient(115deg,#bc965d,#e5c697 18%,#e9cea2 72%,#bf9a64);color:#73501e;border:1px solid #b18a55;box-shadow:0 24px 65px #100205b3,inset 0 0 32px #956a3738;border-radius:2px 4px 3px 2px}
+.paper-seal{position:absolute;top:12%;width:28px;height:38px;stroke:#805a2a;stroke-width:1.15}
+.intro-phrase{width:100%;min-height:3em;margin:15px 0 0;text-align:center;white-space:pre-line;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;font-size:clamp(20px,2.2vw,26px);line-height:1.55;color:#72501f;letter-spacing:.015em}
+.intro-caret{display:inline-block;width:1px;height:1em;margin-left:3px;vertical-align:-.12em;background:#72501f;animation:ink-caret .85s steps(1) infinite}
+.paper-rule{position:absolute;bottom:13%;height:1px;width:62px;background:#a47c454d}
+@keyframes ink-caret{0%,49%{opacity:1}50%,100%{opacity:0}}
+@media(max-height:480px){.intro-paper{height:82svh;width:320px;gap:12px}.paper-seal{top:7%;height:27px}.intro-phrase{font-size:20px}.paper-rule{bottom:8%}}
+@media(prefers-reduced-motion:reduce){.intro-caret{animation:none}}
+@media(prefers-reduced-motion:reduce){.curtain{will-change:auto}}
+
+/* Keep the restaurant hidden until the first curtain opening, including cold loads. */
+#scene{visibility:hidden}
+.scene-ready #scene,.no-motion #scene{visibility:visible}
+.no-motion #preloader{display:none}
