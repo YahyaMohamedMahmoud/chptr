@@ -81,7 +81,7 @@ body{font-family:'Cinzel',Georgia,'Times New Roman',serif}
 .curtain-left img{left:0}
 .curtain-right img{right:0}
 /* The prologue: the CHPTR parchment (cut out, with alpha) and the phrase written onto it. */
-.intro-paper{position:absolute;left:50%;top:50%;width:min(372px,82vw,calc(74svh * 583 / 672));aspect-ratio:583/672;container-type:inline-size;
+.intro-paper{position:absolute;left:50%;top:50%;width:min(56svh,82vw);aspect-ratio:583/672;container-type:inline-size;
   filter:drop-shadow(0 30px 44px #07010399) drop-shadow(0 4px 10px #0008)}
 .intro-paper img{display:block;width:100%;height:100%}
 .intro-phrase{position:absolute;left:9%;right:9%;top:49.5%;margin:0;text-align:center;white-space:pre-line;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;
