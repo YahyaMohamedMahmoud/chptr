@@ -8,7 +8,7 @@ const CONFIG = {
     jump: { path: 'images/horse-', start: 90, count: 64, ext: 'webp' },
     final: 'images/horse-final.webp',
     frameScale: 1,
-    sourceScale: .5,
+    sourceScale: .375,   // frames are stored at 37.5% of the original artwork (lossy WebP, ~27 KB each)
   },
   horse: {
     scale: .25,          // stage px per ORIGINAL artwork px — one value for the run, the jump and the logo
@@ -116,6 +116,7 @@ function buildTimeline() {
   Object.assign(S, { airborne: false, anchorX: 0, anchorY: 0, seq: 'run', f: 0, jf: 0, x: xStart, y: C.ground, floor: C.ground, reflection: 0, shadow: 0, sparkle: 0, shine: -1, visible: 0, k: C.approachDepth });
   horse.clear(); horse.lastX = null;
   horse.runFrameAt = x => Math.max(0, runFrames - (takeoff - x) / pxPerFrame);   // legs locked to distance
+  horse.runDuration = RUN;   // the loader uses it to decide when the curtains may open early
 
   gsap.set('#arch-light', { opacity: 0 });
   gsap.set('#arch-light .arch-bloom, #arch-light .arch-edge, #arch-light .arch-core', { strokeDashoffset: 1 });
@@ -255,7 +256,15 @@ function start() {
   const sceneReady = Promise.all([...document.images].map(imageReady)).then(results => results.every(Boolean));
   const revealFinal = () => { tl.progress(1); horse.state.visible = 0; };
   if (reduced) { openCurtains(sceneReady, revealFinal, revealFinal); return; }
-  const framesReady = horse.preload().catch(() => false);
+  // Open as soon as every frame is decoded — or earlier, once the whole gallop is in and the
+  // measured download rate says the remaining jump poses will land before they are played.
+  const framesReady = new Promise(resolve => {
+    const jumpBudget = (horse.runDuration || 2) + 1.0;   // seconds until the last jump pose is drawn
+    horse.preload(p => {
+      if (p.done === p.total) resolve(!p.failed);
+      else if (!p.failed && p.runDone === p.runTotal && p.jumpDone >= 24 && p.remainingEstimate * 1.6 < jumpBudget) resolve(true);
+    }).then(ok => resolve(ok), () => resolve(false));
+  });
   openCurtains(Promise.all([sceneReady, framesReady]).then(results => results.every(Boolean)), () => {
     $$('#glows i').forEach(candle);
     tl.play(0);

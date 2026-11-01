@@ -43,6 +43,6 @@ window.openCurtains = function (ready, onReady, onFallback) {
     script.call(resolve, null, '+=.8');
   });
   // Never leave visitors trapped behind fabric on an unavailable asset.
-  timeout = setTimeout(() => finish(false), 60000);
+  timeout = setTimeout(() => finish(false), 25000);
   Promise.all([writing, ready]).then(([, ok]) => finish(ok !== false)).catch(() => finish(false));
 };

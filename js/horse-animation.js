@@ -22,25 +22,32 @@ class HorseAnimation {
     x.fillStyle = g; x.fillRect(0, 0, 32, 32); return c;
   }
 
-  /* Load and decode all used poses behind the curtains, at most three at a time.
-     Playback never depends on another network request. */
-  async preload() {
+  /* Load and decode all used poses behind the curtains, in play order, six at a time
+     (GitHub Pages is HTTP/2, so parallel requests share one connection).
+     Progress is reported so the scene can open as soon as playback can no longer stall. */
+  async preload(onProgress) {
     const { run, jump } = this.cfg.assets;
     this.frames.run = Array(run.count); this.frames.jump = Array(jump.count);
     this.registerRun();
     const order = [...new Set(this.runOrder || [...Array(run.count).keys()])];
     const jobs = [...order.map(i => ['run', i]), ...Array.from({length: jump.count}, (_, i) => ['jump', i])];
-    let next = 0, failed = false;
+    const progress = { done: 0, total: jobs.length, runTotal: order.length, runDone: 0, jumpDone: 0, failed: false, startedAt: performance.now() };
+    this.progress = progress;
+    let next = 0;
     const worker = async () => {
       while (next < jobs.length) {
         const [seq, i] = jobs[next++], spec = this.cfg.assets[seq];
         const src = `${spec.path}${String((spec.start || 1) + i).padStart(3, '0')}.${spec.ext}`;
         try { this.frames[seq][i] = this.prepareFrame(await HorseAnimation.loadImage(src)); }
-        catch { failed = true; }
+        catch { progress.failed = true; }
+        progress.done++; if (seq === 'run') progress.runDone++; else progress.jumpDone++;
+        progress.elapsed = (performance.now() - progress.startedAt) / 1000;
+        progress.remainingEstimate = progress.done ? (progress.total - progress.done) * progress.elapsed / progress.done : Infinity;
+        if (onProgress) onProgress(progress);
       }
     };
-    await Promise.all(Array.from({length: 3}, worker));
-    return !failed;
+    await Promise.all(Array.from({length: 6}, worker));
+    return !progress.failed;
   }
   prepareFrame(img) {
     const k = this.cfg.horse.scale / this.cfg.assets.frameScale;
@@ -61,7 +68,7 @@ class HorseAnimation {
       try {
         return await new Promise((resolve, reject) => {
           const img = new Image(); img.decoding = 'async';
-          const timer = setTimeout(() => { img.onload = img.onerror = null; img.src = ''; reject(new Error('Image timeout')); }, 15000);
+          const timer = setTimeout(() => { img.onload = img.onerror = null; img.src = ''; reject(new Error('Image timeout')); }, 12000);
           const fail = error => { clearTimeout(timer); reject(error); };
           img.onerror = () => fail(new Error('Could not load ' + src));
           img.onload = async () => {
