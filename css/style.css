@@ -80,13 +80,14 @@ body{font-family:'Cinzel',Georgia,'Times New Roman',serif}
 .curtain img{position:absolute;top:0;display:block;width:100vw;height:100%;max-width:none;object-fit:cover;object-position:center;pointer-events:none}
 .curtain-left img{left:0}
 .curtain-right img{right:0}
- .intro-paper{position:absolute;left:50%;top:50%;width:min(340px,78vw);height:min(440px,72svh);padding:clamp(28px,7vh,56px) 25px 30px;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;background:radial-gradient(ellipse at 35% 25%,#f3dfb8,transparent 75%),linear-gradient(115deg,#bc965d,#e5c697 18%,#e9cea2 72%,#bf9a64);color:#73501e;border:1px solid #b18a55;box-shadow:0 24px 65px #100205b3,inset 0 0 32px #956a3738;border-radius:2px 4px 3px 2px}
-.paper-seal{position:absolute;top:12%;width:28px;height:38px;stroke:#805a2a;stroke-width:1.15}
-.intro-phrase{width:100%;min-height:3em;margin:15px 0 0;text-align:center;white-space:pre-line;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;font-size:clamp(20px,2.2vw,26px);line-height:1.55;color:#72501f;letter-spacing:.015em}
-.intro-caret{display:inline-block;width:1px;height:1em;margin-left:3px;vertical-align:-.12em;background:#72501f;animation:ink-caret .85s steps(1) infinite}
-.paper-rule{position:absolute;bottom:13%;height:1px;width:62px;background:#a47c454d}
+/* The prologue: the CHPTR parchment (cut out, with alpha) and the phrase written onto it. */
+.intro-paper{position:absolute;left:50%;top:50%;width:min(372px,82vw,calc(74svh * 583 / 672));aspect-ratio:583/672;container-type:inline-size;
+  filter:drop-shadow(0 30px 44px #07010399) drop-shadow(0 4px 10px #0008)}
+.intro-paper img{display:block;width:100%;height:100%}
+.intro-phrase{position:absolute;left:9%;right:9%;top:49.5%;margin:0;text-align:center;white-space:pre-line;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;
+  font-size:6.2cqw;line-height:1.4;color:#5a3914;letter-spacing:.01em;text-shadow:0 1px 0 #fff2d27a,0 0 1px #2e1a0540}
+.intro-caret{display:inline-block;width:1px;height:1em;margin-left:3px;vertical-align:-.12em;background:#5a3914;animation:ink-caret .85s steps(1) infinite}
 @keyframes ink-caret{0%,49%{opacity:1}50%,100%{opacity:0}}
-@media(max-height:480px){.intro-paper{height:82svh;width:320px;gap:12px}.paper-seal{top:7%;height:27px}.intro-phrase{font-size:20px}.paper-rule{bottom:8%}}
 @media(prefers-reduced-motion:reduce){.intro-caret{animation:none}}
 @media(prefers-reduced-motion:reduce){.curtain{will-change:auto}}
 

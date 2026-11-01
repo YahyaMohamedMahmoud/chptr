@@ -7,7 +7,7 @@ window.openCurtains = function (ready, onReady, onFallback) {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (!window.gsap) { overlay.remove(); onFallback(); return; }
   const text = 'Every story begins\nwith a chapter…';
-  gsap.set(paper, { opacity: 1, y: 0 });
+  gsap.set(paper, { opacity: 1, xPercent: -50, yPercent: -50, y: 0 });
   let finished = false, timeout;
   const finish = ok => {
     if (finished) return;
